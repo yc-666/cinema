@@ -92,8 +92,8 @@ public class CardServiceImpl implements CardService {
         card.setBalance(card.getBalance()+value);
         //消费记录
         Record record = new Record();
-        record.setcardId(cardId);
-        record.setspendType(0);
+        record.setCardId(cardId);
+        record.setSpendType(0);
         record.setValue(value);
         cardMapper.updateCardById(card);
         recordService.insertRecord(record);
@@ -106,12 +106,12 @@ public class CardServiceImpl implements CardService {
             card.setIntegral(card.getIntegral()+integral);;
         //消费记录
         Record record1 = new Record();
-        record1.setcardId(cardId);
-        record1.setspendType(0);
+        record1.setCardId(cardId);
+        record1.setSpendType(0);
         record1.setValue(price*-1);
         Record record2 = new Record();
-        record2.setcardId(cardId);
-        record2.setspendType(1);
+        record2.setCardId(cardId);
+        record2.setSpendType(1);
         record2.setValue(integral);
         cardMapper.updateCardById(card);
         recordService.insertRecord(record1);
@@ -128,8 +128,8 @@ public class CardServiceImpl implements CardService {
             if(card.getIntegral()<=consumeIntegral){
                 consumeIntegral-=card.getIntegral();
                 Record record2 = new Record();
-                record2.setcardId(card.getCardId());
-                record2.setspendType(1);
+                record2.setCardId(card.getCardId());
+                record2.setSpendType(1);
                 record2.setValue(card.getIntegral()*-1);
                 card.setIntegral(0);
                 cardMapper.updateCardById(card);
@@ -138,8 +138,8 @@ public class CardServiceImpl implements CardService {
                 //消耗积分比当前卡中少，卡中积分减去需消耗积分
 
                 Record record = new Record();
-                record.setcardId(card.getCardId());
-                record.setspendType(1);
+                record.setCardId(card.getCardId());
+                record.setSpendType(1);
                 record.setValue(consumeIntegral*-1);
                 card.setIntegral(card.getIntegral()-consumeIntegral);
                 cardMapper.updateCardById(card);
