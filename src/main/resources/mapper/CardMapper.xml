@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zrkworld.cinema.mapper.CardMapper" >
-  <resultMap id="BaseResultMap" type="com.zrkworld.cinema.entity.Card" >
+<mapper namespace="org.ltc.cinema.mapper.CardMapper" >
+  <resultMap id="BaseResultMap" type="org.ltc.cinema.entity.Card" >
     <id column="cardid" property="cardId" jdbcType="VARCHAR" />
     <result column="memberid" property="memberId" jdbcType="VARCHAR" />
     <result column="balance" property="balance" jdbcType="INTEGER" />
     <result column="integral" property="integral" jdbcType="INTEGER" />
     <result column="lose" property="lose" jdbcType="INTEGER" />
   </resultMap>
-  <select id="selectCardByMemberId" parameterType="String" resultType="com.zrkworld.cinema.entity.Card">
+  <select id="selectCardByMemberId" parameterType="String" resultType="org.ltc.cinema.entity.Card">
     select *
     from card
     where memberid=#{memberId,jdbcType=VARCHAR}
     order by balance desc
   </select>
 
-  <select id="selectCardById" resultType="com.zrkworld.cinema.entity.Card">
+  <select id="selectCardById" resultType="org.ltc.cinema.entity.Card">
     select *
     from card
     where cardid=#{cardId,jdbcType=VARCHAR}
@@ -34,7 +34,7 @@
     where memberid=#{memberId,jdbcType=VARCHAR} and cardid like #{cardId,jdbcType=VARCHAR}"%"
   </select>
 
-  <insert id="insertCard" parameterType="com.zrkworld.cinema.entity.Card">
+  <insert id="insertCard" parameterType="org.ltc.cinema.entity.Card">
    insert into card (cardid, memberid, balance,
       integral, lose)
     values (#{cardId,jdbcType=VARCHAR}, #{memberId,jdbcType=VARCHAR}, #{balance,jdbcType=INTEGER},
@@ -46,7 +46,7 @@
   where cardid=#{cardId,jdbcType=VARCHAR}
 </delete>
 
-<update id="updateCardById" parameterType="com.zrkworld.cinema.entity.Card">
+<update id="updateCardById" parameterType="org.ltc.cinema.entity.Card">
    update card
   <set >
     <if test="memberId != null" >
