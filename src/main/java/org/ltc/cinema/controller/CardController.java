@@ -21,13 +21,14 @@ import java.util.List;
 @Api(tags = "会员卡模块")
 @CrossOrigin
 @RestController
-//@RequestMapping("/card") 需要改前端url
+@RequestMapping("/members/{memberId}/cards")
 public class CardController {
     @Resource
     CardService cardService;
 
     /**
      * 获取某一成员的会员卡信息
+     *
      * @param memberId
      * @param pageIndex
      * @param pageSize
@@ -36,17 +37,17 @@ public class CardController {
     @ApiOperation(value = "获取某一成员的所有会员卡信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "memberId", value = "成员id",
-                    required = true, paramType = "body", dataType = "String"),
+                    required = true, paramType = "path", dataType = "String"),
             @ApiImplicitParam(name = "pageIndex", value = "分页开始位置",
-                    required = true, paramType = "body", dataType = "String"),
+                    required = true, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "pageSize", value = "分页大小",
-                    required = true, paramType = "body", dataType = "String")})
+                    required = true, paramType = "query", dataType = "String")})
     @ApiResponses({
             @ApiResponse(code = 200, message = "获取成功"),
             @ApiResponse(code = 400, message = "获取失败"),
     })
-    @PostMapping(value = "getCardData")
-    public CinemaResult getCardData(String memberId, String pageIndex, String pageSize) {
+    @GetMapping("")
+    public CinemaResult getCardData(@PathVariable("memberId") String memberId, String pageIndex, String pageSize) throws CardException {
         //这里使用分页插件pagehelper
         PageResult pageResult = new PageResult();
         //打辅助
@@ -72,9 +73,17 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("registerCard")
-    public CinemaResult registerCard(String memberId) throws CardException {
-
+    @ApiOperation(value = "为一个成员新增一张会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    required = true, paramType = "path", dataType = "String"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "添加成功"),
+            @ApiResponse(code = 400, message = "添加失败"),
+    })
+    @PostMapping("/reg")
+    public CinemaResult registerCard(@PathVariable("memberId") String memberId) throws CardException {
         cardService.registerCard(memberId);
         return CinemaResult.success();
     }
@@ -89,8 +98,19 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("reissueCard")
-    public CinemaResult reissueCard(String cardId) {
+    @ApiOperation(value = "补办一张会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "carId", value = "旧会员卡id",
+                    required = true, paramType = "path", dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "补办成功"),
+            @ApiResponse(code = 400, message = "补办失败"),
+    })
+    @PostMapping("/reissue/{carId}")
+    public CinemaResult reissueCard(@PathVariable("carId") String cardId) throws CardException {
 
         cardId = cardService.reissueCard(cardId);
         return CinemaResult.success("ok", cardId);
@@ -106,9 +126,19 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("loseCard")
-    public CinemaResult loseCard(String cardId) {
-
+    @ApiOperation(value = "挂失会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "carId", value = "会员卡id",
+                    required = true, paramType = "path", dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "挂失成功"),
+            @ApiResponse(code = 400, message = "挂失失败"),
+    })
+    @PutMapping("/lose/{carId}")
+    public CinemaResult loseCard(@PathVariable("carId") String cardId) throws CardException {
         cardService.loseCard(cardId);
         return CinemaResult.success();
     }
@@ -123,9 +153,20 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("cancelCard")
-    public CinemaResult cancelCard(String cardId) {
 
+    @ApiOperation(value = "解挂会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "carId", value = "会员卡id",
+                    required = true, paramType = "path", dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "解挂成功"),
+            @ApiResponse(code = 400, message = "解挂失败"),
+    })
+    @PutMapping("cancel/{cardId}")
+    public CinemaResult cancelCard(@PathVariable("cardId") String cardId) throws CardException {
         cardService.cancelCard(cardId);
         return CinemaResult.success();
     }
@@ -140,9 +181,21 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("rechargeCard")
-    public CinemaResult rechargeCard(String cardId, String value) {
-
+    @ApiOperation(value = "充值会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "carId", value = "会员卡id",
+                    required = true, paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "value", value = "充值金额",
+                    required = true, paramType = "body", dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "充值成功"),
+            @ApiResponse(code = 400, message = "充值失败"),
+    })
+    @PostMapping("/{cardId}/recharge")
+    public CinemaResult rechargeCard(@PathVariable("cardId") String cardId, String value) throws CardException {
         cardService.rechargeCard(cardId, Integer.parseInt(value));
         return CinemaResult.success();
     }
@@ -157,9 +210,23 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("consumeCard")
-    public CinemaResult consumeCard(String cardId, String price, String integral) {
-
+    @ApiOperation(value = "会员卡消费")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "carId", value = "会员卡id",
+                    required = true, paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "price", value = "消费金额",
+                    required = true, paramType = "body", dataType = "String"),
+            @ApiImplicitParam(name = "integral", value = "积分数量",
+                    required = true, paramType = "body", dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "消费成功"),
+            @ApiResponse(code = 400, message = "消费失败"),
+    })
+    @PostMapping("/{cardId}/consume")
+    public CinemaResult consumeCard(@PathVariable("cardId") String cardId, String price, String integral) throws CardException {
         cardService.consumeCard(cardId, Integer.parseInt(price), Integer.parseInt(integral));
         return CinemaResult.success();
     }
@@ -175,9 +242,19 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("exchangeIntegral")
-    public CinemaResult exchangeIntegral(String memberId, String integral) {
-
+    @ApiOperation(value = "积分兑换")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    required = true, paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "integral", value = "积分数量",
+                    required = true, paramType = "body", dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "兑换成功"),
+            @ApiResponse(code = 400, message = "兑换失败"),
+    })
+    @PostMapping("/integral/exchange")
+    public CinemaResult exchangeIntegral(@PathVariable("memberId") String memberId, String integral) throws CardException {
         cardService.exchangeIntegral(memberId, Integer.parseInt(integral));
         return CinemaResult.success();
     }
@@ -192,10 +269,19 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("getCardIdByFuzzyQuery")
-    public CinemaResult getCardIdByFuzzyQuery(String memberId, String cardId) {
-
-
+    @ApiOperation(value = "模糊查询会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    required = true, paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "cardId", value = "会员卡id",
+                    required = true, paramType = "path", dataType = "String"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "查询成功"),
+            @ApiResponse(code = 400, message = "查询失败"),
+    })
+    @GetMapping("{cardId}/like")
+    public CinemaResult getCardIdByFuzzyQuery(@PathVariable("memberId") String memberId, @PathVariable("cardId") String cardId) throws CardException {
         return CinemaResult.success(cardService.getCardIdByFuzzyQuery(memberId, cardId));
     }
 
@@ -209,8 +295,19 @@ public class CardController {
      * });
      * };
      */
-    @RequestMapping("getCardByCardId")
-    public CinemaResult getCardByCardId(String cardId) {
+    @ApiOperation(value = "查询会员卡")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    paramType = "path", dataType = "String"),
+            @ApiImplicitParam(name = "cardId", value = "会员卡id",
+                    required = true, paramType = "path", dataType = "String"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "查询成功"),
+            @ApiResponse(code = 400, message = "查询失败"),
+    })
+    @GetMapping("{cardId}")
+    public CinemaResult getCardByCardId(@PathVariable("cardId") String cardId) throws CardException {
 
         return CinemaResult.success(cardService.getCardByCardId(cardId));
     }
