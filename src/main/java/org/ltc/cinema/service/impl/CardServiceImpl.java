@@ -5,6 +5,7 @@ import org.ltc.cinema.entity.Card;
 import org.ltc.cinema.entity.Record;
 import org.ltc.cinema.service.CardService;
 import org.ltc.cinema.service.RecordService;
+import org.ltc.cinema.service.exception.CardException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -12,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * @author zrk
+ * @author txg
  * @version 1.0
- * @date 2020/5/1 0001 11:45
+ * @date 2022/8/7 12:01
  */
 @Service
 public class CardServiceImpl implements CardService {
@@ -22,6 +23,7 @@ public class CardServiceImpl implements CardService {
     CardMapper cardMapper;
     @Resource
     RecordService recordService;
+
     @Override
     public List<Card> getCardData(String memberId) {
         return cardMapper.selectCardByMemberId(memberId);
@@ -34,7 +36,7 @@ public class CardServiceImpl implements CardService {
 
 
     @Override
-    public void registerCard(String memberId) {
+    public void registerCard(String memberId) throws CardException {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         Card card = new Card();
         card.setCardId(uuid);
@@ -42,7 +44,12 @@ public class CardServiceImpl implements CardService {
         card.setIntegral(0);
         card.setLose(0);
         card.setMemberId(memberId);
-        cardMapper.insertCard(card);
+        // 貌似可以的异常举例
+        try{
+            cardMapper.insertCard(card);
+        }catch (RuntimeException e){
+            throw new CardException("会员卡增加失败! "+e.getMessage());
+        }
     }
 
     @Override

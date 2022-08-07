@@ -1,6 +1,7 @@
 package org.ltc.cinema.service;
 
 import org.ltc.cinema.entity.Card;
+import org.ltc.cinema.service.exception.CardException;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public interface CardService {
      * 注册一个新会员卡
      * @param cardId
      */
-    void registerCard(String cardId);
+    void registerCard(String cardId) throws CardException;
 
     /**
      * 删除一个会员卡信息

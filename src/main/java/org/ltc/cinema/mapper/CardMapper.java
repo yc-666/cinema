@@ -21,7 +21,7 @@ public interface CardMapper {
      * 新增会员卡
      * @param card
      */
-    void insertCard(Card card);
+    int insertCard(Card card);
 
     /**
      * 通过会员卡号，查找会员卡

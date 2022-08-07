@@ -2,37 +2,61 @@ package org.ltc.cinema.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.*;
 import org.ltc.cinema.entity.Card;
 import org.ltc.cinema.common.vo.CinemaResult;
 import org.ltc.cinema.entity.PageResult;
 import org.ltc.cinema.service.CardService;
-import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.ltc.cinema.service.exception.CardException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+
 /**
- * @author zrk
+ * @author txg
  * @version 1.0
- * @date 2020/5/1 0001 11:45
+ * @date 2022/8/7 11:45
  */
 @Api(tags = "会员卡模块")
 @CrossOrigin
 @RestController
+//@RequestMapping("/card") 需要改前端url
 public class CardController {
     @Resource
     CardService cardService;
 
-
-    @RequestMapping("getCardData")
+    /**
+     * 获取某一成员的会员卡信息
+     * @param memberId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     */
+    @ApiOperation(value = "获取某一成员的所有会员卡信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "memberId", value = "成员id",
+                    required = true, paramType = "body", dataType = "String"),
+            @ApiImplicitParam(name = "pageIndex", value = "分页开始位置",
+                    required = true, paramType = "body", dataType = "String"),
+            @ApiImplicitParam(name = "pageSize", value = "分页大小",
+                    required = true, paramType = "body", dataType = "String")})
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "获取成功"),
+            @ApiResponse(code = 400, message = "获取失败"),
+    })
+    @PostMapping(value = "getCardData")
     public CinemaResult getCardData(String memberId, String pageIndex, String pageSize) {
         //这里使用分页插件pagehelper
         PageResult pageResult = new PageResult();
+        //打辅助
         PageHelper.startPage(Integer.parseInt(pageIndex), Integer.parseInt(pageSize));
+        //从数据库获取会员卡的数据
+        //判断是否出现问题
         List lists = cardService.getCardData(memberId);
+        //将从数据库获取的数据列表封装在PageInfo中
         PageInfo<Card> pageInfo = new PageInfo<>(lists);
+        //再放入pageResult
         pageResult.setList(pageInfo.getList());
         pageResult.setPageTotal(pageInfo.getTotal());
         return CinemaResult.success(pageResult);
@@ -49,7 +73,7 @@ public class CardController {
      * };
      */
     @RequestMapping("registerCard")
-    public CinemaResult registerCard(String memberId) {
+    public CinemaResult registerCard(String memberId) throws CardException {
 
         cardService.registerCard(memberId);
         return CinemaResult.success();
@@ -69,7 +93,7 @@ public class CardController {
     public CinemaResult reissueCard(String cardId) {
 
         cardId = cardService.reissueCard(cardId);
-        return CinemaResult.success("ok",cardId);
+        return CinemaResult.success("ok", cardId);
     }
 
     /**
@@ -157,30 +181,32 @@ public class CardController {
         cardService.exchangeIntegral(memberId, Integer.parseInt(integral));
         return CinemaResult.success();
     }
+
     /**
-     *  //通过模糊条件查询到cardId，请求参数memberId,CardId，返回CardId列表
+     * //通过模糊条件查询到cardId，请求参数memberId,CardId，返回CardId列表
      * export const getCardIdByFuzzyQuery = query=>{
-     *     return request({
-     *         url:"getCardIdByFuzzyQuery",
-     *         method:'post',
-     *         params:query
-     *     });
+     * return request({
+     * url:"getCardIdByFuzzyQuery",
+     * method:'post',
+     * params:query
+     * });
      * };
      */
     @RequestMapping("getCardIdByFuzzyQuery")
-    public CinemaResult getCardIdByFuzzyQuery(String memberId,String cardId) {
+    public CinemaResult getCardIdByFuzzyQuery(String memberId, String cardId) {
 
 
-        return CinemaResult.success(cardService.getCardIdByFuzzyQuery(memberId,cardId));
+        return CinemaResult.success(cardService.getCardIdByFuzzyQuery(memberId, cardId));
     }
+
     /**
-     *  //通过完整cardid来查询card数据，返回Card对象
+     * //通过完整cardid来查询card数据，返回Card对象
      * export const getCardByCardId = query=>{
-     *     return request({
-     *         url:"getCardByCardId",
-     *         method:'post',
-     *         params:query
-     *     });
+     * return request({
+     * url:"getCardByCardId",
+     * method:'post',
+     * params:query
+     * });
      * };
      */
     @RequestMapping("getCardByCardId")

@@ -59,6 +59,9 @@ public class CinemaResult<T> {
         return success(msg, null);
     }
 
+    public static <T> CinemaResult<T> failure(String msg) {
+        return failure(null, "", null);
+    }
 
     public static <T> CinemaResult<T> failure(Integer code, String msg) {
         return failure(code, msg, null);

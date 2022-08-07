@@ -3,8 +3,12 @@ package org.ltc.cinema.exception.advice;
 import org.ltc.cinema.common.constants.ResultCode;
 import org.ltc.cinema.common.vo.CinemaResult;
 import lombok.extern.slf4j.Slf4j;
+import org.ltc.cinema.service.exception.CardException;
+import org.ltc.cinema.service.exception.MemberException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.rmi.ServerException;
 
 
 /**
@@ -38,6 +42,20 @@ public class GlobalExceptionAdvice {
     public CinemaResult handlerRuntimeException(RuntimeException e){
         log.error("运行时异常：" + e.getMessage(), e);
         return CinemaResult.failure(201,"运行时异常:" + e.getMessage());
+    }
+
+    @ExceptionHandler(ServerException.class)
+    public CinemaResult serverRuntimeException(Throwable e){
+        log.error("服务异常---"+e.getMessage(),e);
+        CinemaResult result = CinemaResult.failure(e.getMessage());
+        if (e instanceof CardException){
+            // 1002 代表卡相关错误
+            result.setData(1002);
+        }else if(e instanceof MemberException){
+            // 1001 代表用户相关错误
+            result.setData(1001);
+        }
+        return result;
     }
 
 }
