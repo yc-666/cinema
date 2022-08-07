@@ -5,6 +5,7 @@ import org.ltc.cinema.common.vo.CinemaResult;
 import lombok.extern.slf4j.Slf4j;
 import org.ltc.cinema.service.exception.CardException;
 import org.ltc.cinema.service.exception.MemberException;
+import org.ltc.cinema.service.exception.RecordException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

@@ -12,6 +12,7 @@ import org.ltc.cinema.common.vo.CinemaResult;
 import org.ltc.cinema.entity.PageResult;
 import org.ltc.cinema.entity.Record;
 import org.ltc.cinema.service.RecordService;
+import org.ltc.cinema.service.exception.RecordException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,12 +45,12 @@ public class RecordController {
             required = true, paramType = "query", dataType = "String")
     })
     @ApiResponses({
-        @ApiResponse(code = 200, message = "查找成果"),
+        @ApiResponse(code = 200, message = "查找成功"),
         @ApiResponse(code = 400, message = "查找失败"),
     })
     @GetMapping("/{memberId}")
     public CinemaResult queryRecord(@PathVariable(value = "memberId") String memberId,
-        String pageIndex, String pageSize) {
+        String pageIndex, String pageSize){
         PageResult pageResult = new PageResult();
         PageHelper.startPage(Integer.parseInt(pageIndex), Integer.parseInt(pageSize));
         List<Record> records = recordService.selectRecordByMemberId(memberId);

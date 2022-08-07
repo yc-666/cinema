@@ -4,6 +4,7 @@ import org.ltc.cinema.mapper.RecordMapper;
 import org.ltc.cinema.entity.Record;
 import org.ltc.cinema.entity.Schart1Data;
 import org.ltc.cinema.service.RecordService;
+import org.ltc.cinema.service.exception.RecordException;
 import org.ltc.cinema.utils.DateManageSystem;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,9 @@ public class RecordServiceImpl implements RecordService {
     RecordMapper recordMapper;
 
     @Override
-    public List<Record> selectRecordByMemberId(String memberId) {
-        return recordMapper.selectRecordByMemberId(memberId);
+    public List<Record> selectRecordByMemberId(String memberId){
+        List <Record> res = recordMapper.selectRecordByMemberId(memberId);
+        return res;
     }
 
     @Override

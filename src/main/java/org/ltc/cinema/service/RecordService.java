@@ -4,6 +4,7 @@ import org.ltc.cinema.entity.Record;
 import org.ltc.cinema.entity.Schart1Data;
 
 import java.util.List;
+import org.ltc.cinema.service.exception.RecordException;
 
 public interface RecordService {
     /**
