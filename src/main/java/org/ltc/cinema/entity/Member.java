@@ -1,25 +1,35 @@
 package org.ltc.cinema.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
- * @author zrk
+ * @author mbz1113zzz
  * @version 1.0
- * @date 2020/5/1 0001 11:45
+ * @date 2022/8/7 18:01
  */
-
+@Data
+@ApiModel(value = "Member",description = "会员模型")
 public class Member implements Serializable {
     /**
      * 与数据库的memberid映射
      */
+    @ApiModelProperty(value = "会员ID",required = true,example = "")
     private String memberId;
 
+    @ApiModelProperty(value = "密码",required = true,example = "")
     private String password;
 
+    @ApiModelProperty(value = "姓名",required = true,example = "")
     private String name;
 
+    @ApiModelProperty(value = "性别",required = true,example = "")
     private String sex;
 
+    @ApiModelProperty(value = "生日",required = true,example = "")
     private String birthday;
 
     private static final long serialVersionUID = 1L;

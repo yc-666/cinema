@@ -1,21 +1,32 @@
 package org.ltc.cinema.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
- * @author zrk
+ * @author mbz1113zzz
  * @version 1.0
- * @date 2020/5/1 0001 11:45
+ * @date 2022/8/7 18:01
  */
+@Data
+@ApiModel(value = "Manager",description = "管理员模块")
 public class Manager implements Serializable {
+    @ApiModelProperty(value = "管理员ID",required = true,example = "")
     private String managerId;
 
+    @ApiModelProperty(value = "管理员密码",required = false,example = "")
     private String password;
 
+    @ApiModelProperty(value = "姓名",required = false,example = "")
     private String name;
 
+    @ApiModelProperty(value = "角色",required = false,example = "")
     private String role;
 
+    @ApiModelProperty(value = "时间",required = false,example = "")
     private String time;
 
     private static final long serialVersionUID = 1L;

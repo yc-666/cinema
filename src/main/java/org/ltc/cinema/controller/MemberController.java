@@ -1,24 +1,26 @@
 package org.ltc.cinema.controller;
 
+import io.swagger.annotations.*;
 import org.ltc.cinema.common.constants.ResultCode;
 import org.ltc.cinema.common.vo.CinemaResult;
 import org.ltc.cinema.entity.Member;
 import org.ltc.cinema.entity.MemberQuery;
 import org.ltc.cinema.service.MemberService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 /**
- * @author zrk
+ * @author mbz1113zzz
  * @version 1.0
- * @date 2020/5/1 0001 11:45
+ * @date 2022/8/7 18:01
  */
+
 @CrossOrigin
 @RestController
+@Api(tags = "会员模块")
+@RequestMapping(value = "/members")
 public class MemberController {
     @Resource
     MemberService memberService;
@@ -40,7 +42,22 @@ public class MemberController {
      * @param birthdayQuery
      * @return
      */
-    @RequestMapping("memberData")
+    @ApiOperation(value = "获取所有会员信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageIndex",value = "分页开始位置",
+                    required = true, paramType = "body",dataType = "String"),
+            @ApiImplicitParam(name = "pageSize",value = "分页大小",
+                    required = true, paramType = "body",dataType = "String"),
+            @ApiImplicitParam(name = "name",value = "会员姓名",
+                    required = false, paramType = "body",dataType = "String"),
+            @ApiImplicitParam(name = "birthdayQuery",value = "查询生日",
+                    required = false, paramType = "body",dataType = "String"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "获取成功"),
+            @ApiResponse(code = 400,message = "获取失败")
+    })
+    @GetMapping(value = "")
     public CinemaResult getMemberData(String pageIndex, String pageSize, String name, String birthdayQuery){
         MemberQuery query = new MemberQuery();
         if(StringUtils.isNotBlank(pageIndex)){
@@ -54,8 +71,16 @@ public class MemberController {
         }
         return memberService.getMemberData(query);
     }
-
-    @RequestMapping("memberRegister")
+    @ApiOperation(value = "会员注册")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "member",value = "会员",
+                    required = true, paramType = "body",dataType = "Member")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "注册成功"),
+            @ApiResponse(code = 400,message = "注册失败")
+    })
+    @PostMapping(value = "/{name}")
     public CinemaResult memberRegister(Member member){
         return memberService.memberRegister(member);
     }
@@ -69,9 +94,17 @@ public class MemberController {
      *     });
      * };
      */
-    @RequestMapping("delMember")
+    @ApiOperation(value = "删除会员")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "member",value = "会员",
+                    required = true, paramType = "body",dataType = "Member")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "删除成功"),
+            @ApiResponse(code = 400,message = "删除失败")
+    })
+    @DeleteMapping(value = "/{memberId}")
     public CinemaResult delMember(Member member){
-        System.out.println(member);
         return memberService.delMember(member.getmemberId());
     }
     /**
@@ -84,7 +117,16 @@ public class MemberController {
      *     });
      * };
      */
-    @RequestMapping("modifyMember")
+    @ApiOperation(value = "修改会员信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "member",value = "会员",
+                    required = true, paramType = "body",dataType = "Member")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "修改成功"),
+            @ApiResponse(code = 400,message = "修改失败")
+    })
+    @PutMapping(value = "/{memberId}")
     public CinemaResult modifyMember(Member member){
         return memberService.modifyMember(member);
     }
@@ -99,7 +141,16 @@ public class MemberController {
      *     });
      * };
      */
-    @RequestMapping("loginMember")
+    @ApiOperation(value = "会员登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "member",value = "会员",
+                    required = true, paramType = "body",dataType = "Member")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "登录成功"),
+            @ApiResponse(code = 400,message = "登录失败")
+    })
+    @GetMapping(value = "/loginMember")
     public CinemaResult loginMember(Member member){
         if(memberService.loginMember(member)!=null){
             return CinemaResult.success();
