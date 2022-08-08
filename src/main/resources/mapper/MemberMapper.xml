@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zrkworld.cinema.mapper.MemberMapper" >
-  <resultMap id="BaseResultMap" type="com.zrkworld.cinema.entity.Member" >
+<mapper namespace="org.ltc.cinema.mapper.MemberMapper" >
+  <resultMap id="BaseResultMap" type="org.ltc.cinema.entity.Member" >
     <id column="memberid" property="memberId" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
@@ -16,7 +16,7 @@
         String sql = "select count(*) from product where cid =?";
 
         -->
-<select id="selectByOrder" parameterType="com.zrkworld.cinema.entity.MemberQuery" resultType="com.zrkworld.cinema.entity.Member">
+<select id="selectByOrder" parameterType="org.ltc.cinema.entity.MemberQuery" resultType="org.ltc.cinema.entity.Member">
   select
   *
   from member
@@ -33,7 +33,7 @@
     limit #{startIndex},#{endIndex}
   </if>
 </select>
-  <select id="selectCountByOrder" parameterType="com.zrkworld.cinema.entity.MemberQuery" resultType="LONG">
+  <select id="selectCountByOrder" parameterType="org.ltc.cinema.entity.MemberQuery" resultType="LONG">
     select
     count(name)
     from
@@ -53,11 +53,11 @@
     ORDER BY NAME,memberid
     ) as a
   </select>
-  <select id="selectMemberByLogin" parameterType="com.zrkworld.cinema.entity.Member" resultType="com.zrkworld.cinema.entity.Member">
+  <select id="selectMemberByLogin" parameterType="org.ltc.cinema.entity.Member" resultType="org.ltc.cinema.entity.Member">
     select *
     from member where memberid=#{memberId,jdbcType=VARCHAR}
   </select>
-  <insert id="insertMember" parameterType="com.zrkworld.cinema.entity.Member">
+  <insert id="insertMember" parameterType="org.ltc.cinema.entity.Member">
     insert into member (memberid, password, name,
       sex, birthday)
     values (#{memberId,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
@@ -73,7 +73,7 @@
     </where>
   </delete>
 
-  <update id="updateMember" parameterType="com.zrkworld.cinema.entity.Member">
+  <update id="updateMember" parameterType="org.ltc.cinema.entity.Member">
     update member
     <set >
       <if test="password != null" >
