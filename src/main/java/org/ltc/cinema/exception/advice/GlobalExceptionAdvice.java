@@ -64,16 +64,6 @@ public class GlobalExceptionAdvice {
         }
         return result;
     }
-
-//    @ExceptionHandler(RecordException.class)
-//    public CinemaResult recordRuntimeException(Throwable e){
-//        log.error("服务异常---"+e.getMessage(),e);
-//        CinemaResult result = CinemaResult.failure(e.getMessage());
-//        result.setData(1003);
-//        result.setStatus(400);
-//        return result;
-//    }
-
 }
 
 
