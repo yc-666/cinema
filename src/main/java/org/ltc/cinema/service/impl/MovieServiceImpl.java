@@ -40,5 +40,4 @@ public class MovieServiceImpl implements MovieService {
         movieMapper.updateMovieById(movie);
         return CinemaResult.success();
     }
-
 }
