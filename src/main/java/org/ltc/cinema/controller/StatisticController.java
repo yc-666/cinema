@@ -6,6 +6,7 @@ import org.ltc.cinema.entity.StatisticData;
 import org.ltc.cinema.service.CardService;
 import org.ltc.cinema.service.MemberService;
 import org.ltc.cinema.service.RecordService;
+import org.ltc.cinema.service.exception.CardException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,7 @@ public class StatisticController {
  * };
  */
     @RequestMapping("getStatisticData")
-    public CinemaResult getStatisticData(){
+    public CinemaResult getStatisticData() throws CardException {
         StatisticData s = new StatisticData();
         s.setMemberNum(memberService.getMemberNum());
         s.setCardNum(cardService.getCardNum());
