@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CorsConfig {
-    @Bean
+    //@Bean
     public FilterRegistrationBean filterRegistrationBean(){
         FilterRegistrationBean reg = new FilterRegistrationBean();
         //使用CORSFilter解决跨域请求
