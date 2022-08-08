@@ -16,14 +16,14 @@ public interface CardService {
      * @param memberId
      * @return
      */
-    List<Card> getCardData(String memberId);
+    List<Card> getCardData(String memberId) throws CardException;
 
     /**
      * 查询当前会员卡的信息
      * @param cardId
      * @return
      */
-    Card getCardDataById(String cardId);
+    Card getCardDataById(String cardId) throws CardException;
 
     /**
      * 注册一个新会员卡
@@ -35,33 +35,33 @@ public interface CardService {
      * 删除一个会员卡信息
      * @param cardId
      */
-    void deleteCardById(String cardId);
+    void deleteCardById(String cardId) throws CardException;
 
     /**
      * 补卡，根据cardId，删除会员卡，并将其信息转移到新卡上
      * @param cardId
      * @return
      */
-    String reissueCard(String cardId);
+    String reissueCard(String cardId) throws CardException;
 
     /**
      * 挂失
      * @param cardId
      */
-    void loseCard(String cardId);
+    void loseCard(String cardId) throws CardException;
 
     /**
      * 解挂
      * @param cardId
      */
-    void cancelCard(String cardId);
+    void cancelCard(String cardId) throws CardException;
 
     /**
      * 充值卡
      * @param cardId
      * @param parseInt 需充值金额
      */
-    void rechargeCard(String cardId, int parseInt);
+    void rechargeCard(String cardId, int parseInt) throws CardException;
 
     /**
      * 对卡内金额进行消费
@@ -69,20 +69,20 @@ public interface CardService {
      * @param price 电影票价格
      * @param integral 增加的积分
      */
-    void consumeCard(String cardId, int price, int integral);
+    void consumeCard(String cardId, int price, int integral) throws CardException;
 
     /**
      * 积分兑换
      * @param memberId
      * @param parseInt 需消耗的积分数
      */
-    void exchangeIntegral(String memberId, int parseInt);
+    void exchangeIntegral(String memberId, int parseInt) throws CardException;
 
     /**
      * 查询所有注册的会员卡数目
      * @return
      */
-    Long getCardNum();
+    Long getCardNum() throws CardException;
 
     /**
      * 模糊查询卡号，返回卡号集合
@@ -90,12 +90,12 @@ public interface CardService {
      * @param cardId 卡号
      * @return
      */
-    List<String> getCardIdByFuzzyQuery(String memberId,String cardId);
+    List<String> getCardIdByFuzzyQuery(String memberId,String cardId) throws CardException;
 
     /**
      * 根据卡号，查到会员卡信息
      * @param cardId
      * @return
      */
-    Card getCardByCardId(String cardId);
+    Card getCardByCardId(String cardId) throws CardException;
 }
