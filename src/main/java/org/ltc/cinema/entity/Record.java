@@ -1,66 +1,34 @@
 package org.ltc.cinema.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import lombok.Data;
+
 
 /**
- * @author zrk
- * @version 1.0
- * @date 2020/5/1 0001 11:45
+ * @author PpxiA
+ *
+ * 消费记录
  */
+@Data
+@ApiModel(description = "消费记录")
 public class Record implements Serializable {
+
+    @ApiModelProperty(value = "消费记录唯一id", required = true, dataType = "Integer")
     private Integer id;
-    /**
-     * 与数据库的cardid映射
-     */
+
+    @ApiModelProperty(value = "消费使用的会员卡id", required = true, dataType = "String")
     private String cardId;
 
+    @ApiModelProperty(value = "消费金额", required = true, dataType = "Integer")
     private Integer value;
 
+    @ApiModelProperty(value = "消费时间", required = true, dataType = "String")
     private String time;
-    /**
-     * 与数据库的spendtype映射
-     */
+
+    @ApiModelProperty(value = "消费类型", required = true, notes = "0是人民币，1是积分",dataType = "Integer")
     private Integer spendType;
 
     private static final long serialVersionUID = 1L;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getcardId() {
-        return cardId;
-    }
-
-    public void setcardId(String cardId) {
-        this.cardId = cardId == null ? null : cardId.trim();
-    }
-
-    public Integer getValue() {
-        return value;
-    }
-
-    public void setValue(Integer value) {
-        this.value = value;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public Integer getspendType() {
-        return spendType;
-    }
-
-    public void setspendType(Integer spendType) {
-        this.spendType = spendType;
-    }
 }

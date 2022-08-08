@@ -3,8 +3,10 @@ package org.ltc.cinema.exception.advice;
 import org.ltc.cinema.common.constants.ResultCode;
 import org.ltc.cinema.common.vo.CinemaResult;
 import lombok.extern.slf4j.Slf4j;
+import org.ltc.cinema.entity.Record;
 import org.ltc.cinema.service.exception.CardException;
 import org.ltc.cinema.service.exception.MemberException;
+import org.ltc.cinema.service.exception.RecordException;
 import org.ltc.cinema.service.exception.ServiceException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -54,11 +56,15 @@ public class GlobalExceptionAdvice {
             result.setStatus(1002);
         }else if(e instanceof MemberException){
             // 1001 代表用户相关错误
+            result.setData(1001);
+        }else if(e instanceof RecordException){
+            // 1003 查找异常
+            result.setData(1003);
+            result.setStatus(400);
             result.setStatus(1001);
         }
         return result;
     }
-
 }
 
 

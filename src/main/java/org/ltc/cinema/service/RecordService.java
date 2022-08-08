@@ -4,6 +4,7 @@ import org.ltc.cinema.entity.Record;
 import org.ltc.cinema.entity.Schart1Data;
 
 import java.util.List;
+import org.ltc.cinema.service.exception.RecordException;
 
 public interface RecordService {
     /**
@@ -11,7 +12,7 @@ public interface RecordService {
      * @param memberId
      * @return
      */
-    List<Record> selectRecordByMemberId(String memberId);
+    List<Record> selectRecordByMemberId(String memberId) throws RecordException;
 
     /**
      * 删除会员卡的消费记录

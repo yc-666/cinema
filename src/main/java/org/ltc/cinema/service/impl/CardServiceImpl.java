@@ -129,7 +129,6 @@ public class CardServiceImpl implements CardService {
         }catch (RuntimeException e){
             throw new CardException("消费失败",e);
         }
-
     }
 
     @Override
@@ -188,8 +187,6 @@ public class CardServiceImpl implements CardService {
         }catch (RuntimeException e){
             throw new CardException("积分不足",e);
         }
-
-
     }
 
     @Override
