@@ -1,5 +1,10 @@
 package org.ltc.cinema.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.ltc.cinema.common.vo.CinemaResult;
 import org.ltc.cinema.entity.DealData;
 import org.ltc.cinema.entity.StatisticData;
@@ -8,6 +13,8 @@ import org.ltc.cinema.service.MemberService;
 import org.ltc.cinema.service.RecordService;
 import org.ltc.cinema.service.exception.CardException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +42,12 @@ public class StatisticController {
  *     });
  * };
  */
-    @RequestMapping("getStatisticData")
+    @ApiOperation(value = "获取统计数据")
+    @ApiResponses({
+        @ApiResponse(code = 200,message = "获取成功"),
+        @ApiResponse(code = 400,message = "获取失败"),
+    })
+    @GetMapping("statisticData")
     public CinemaResult getStatisticData() throws CardException {
         StatisticData s = new StatisticData();
         s.setMemberNum(memberService.getMemberNum());
@@ -53,7 +65,12 @@ public class StatisticController {
      *     });
      * };
      */
-    @RequestMapping("requestDealData")
+    @ApiOperation(value = "获取统计数据")
+    @ApiResponses({
+        @ApiResponse(code = 200,message = "获取成功"),
+        @ApiResponse(code = 400,message = "获取失败"),
+    })
+    @GetMapping("dealData")
     public CinemaResult requestDealData(){
         DealData dealData = new DealData();
         dealData.setConsume(recordService.getConsumeCount()*-1);
@@ -71,7 +88,12 @@ public class StatisticController {
      *     });
      * };
      */
-    @RequestMapping("getSchart1Data")
+    @ApiOperation(value = "获取统计数据")
+    @ApiResponses({
+        @ApiResponse(code = 200,message = "获取成功"),
+        @ApiResponse(code = 400,message = "获取失败"),
+    })
+    @GetMapping("schart1Data")
     public CinemaResult getSchart1Data(){
         return CinemaResult.success(recordService.getSchart1Data());
     }
