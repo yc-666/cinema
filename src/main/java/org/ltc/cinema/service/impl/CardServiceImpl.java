@@ -25,13 +25,25 @@ public class CardServiceImpl implements CardService {
     RecordService recordService;
 
     @Override
-    public List<Card> getCardData(String memberId) {
-        return cardMapper.selectCardByMemberId(memberId);
+    public List<Card> getCardData(String memberId) throws CardException {
+        List<Card> list = null;
+        try {
+            list = cardMapper.selectCardByMemberId(memberId);
+        }catch (RuntimeException e){
+            throw new CardException("获取卡信息失败 "+ e.getMessage());
+        }
+        return list;
     }
 
     @Override
-    public Card getCardDataById(String cardId) {
-        return cardMapper.selectCardById(cardId);
+    public Card getCardDataById(String cardId) throws CardException {
+        Card card = null;
+        try {
+            card = cardMapper.selectCardById(cardId);
+        }catch (RuntimeException e){
+            throw new CardException("无该用户信息",e);
+        }
+        return card;
     }
 
 
@@ -48,123 +60,166 @@ public class CardServiceImpl implements CardService {
         try{
             cardMapper.insertCard(card);
         }catch (RuntimeException e){
-            throw new CardException("会员卡增加失败! "+e.getMessage());
+            throw new CardException("会员卡增加失败! ",e);
         }
     }
 
     @Override
-    public void deleteCardById(String cardId) {
-        cardMapper.deleteCardById(cardId);
+    public void deleteCardById(String cardId) throws CardException {
+        try {
+            cardMapper.deleteCardById(cardId);
+        }catch (RuntimeException e){
+            throw new CardException("删除失败，卡号不对",e);
+        }
     }
 
     @Override
-    public String reissueCard(String cardId) {
-        Card card = this.getCardDataById(cardId);
-        //由于在记录表中有外键依赖，所以必须先删除
-        recordService.deleteRecordByCardId(cardId);
-        deleteCardById(cardId);
+    public String reissueCard(String cardId) throws CardException {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-        card.setCardId(uuid);
-        card.setLose(0);
-        cardMapper.insertCard(card);
+        try {
+            Card card = this.getCardDataById(cardId);
+            //由于在记录表中有外键依赖，所以必须先删除
+            recordService.deleteRecordByCardId(cardId);
+            deleteCardById(cardId);
+            card.setCardId(uuid);
+            card.setLose(0);
+            cardMapper.insertCard(card);
+        }catch (RuntimeException e){
+            throw new CardException("解除挂失失败",e);
+        }
         return uuid;
     }
 
     @Override
-    public void loseCard(String cardId) {
+    public void loseCard(String cardId) throws CardException {
         Card card = new Card();
         card.setCardId(cardId);
         card.setLose(1);
-        cardMapper.updateCardById(card);
+        try {
+            cardMapper.updateCardById(card);
+        }catch (RuntimeException e){
+            throw new CardException("挂失失败",e);
+        }
     }
 
     @Override
-    public void cancelCard(String cardId) {
+    public void cancelCard(String cardId) throws CardException {
         Card card = new Card();
         card.setCardId(cardId);
         card.setLose(0);
-        cardMapper.updateCardById(card);
+        try {
+            cardMapper.updateCardById(card);
+        }catch (RuntimeException e){
+            throw new CardException("消除会员卡失败",e);
+        }
     }
 
     @Override
-    public void rechargeCard(String cardId, int value) {
-        Card card = this.getCardDataById(cardId);
-        card.setBalance(card.getBalance()+value);
-        //消费记录
-        Record record = new Record();
-        record.setCardId(cardId);
-        record.setSpendType(0);
-        record.setValue(value);
-        cardMapper.updateCardById(card);
-        recordService.insertRecord(record);
+    public void rechargeCard(String cardId, int value) throws CardException {
+        try{
+            Card card = this.getCardDataById(cardId);
+            card.setBalance(card.getBalance()+value);
+            //消费记录
+            Record record = new Record();
+            record.setcardId(cardId);
+            record.setspendType(0);
+            record.setValue(value);
+            cardMapper.updateCardById(card);
+            recordService.insertRecord(record);
+        }catch (RuntimeException e){
+            throw new CardException("消费失败",e);
+        }
     }
 
     @Override
-    public void consumeCard(String cardId, int price, int integral) {
-        Card card = this.getCardDataById(cardId);
+    public void consumeCard(String cardId, int price, int integral) throws CardException {
+        try {
+            Card card = this.getCardDataById(cardId);
             card.setBalance(card.getBalance()-price);
             card.setIntegral(card.getIntegral()+integral);;
-        //消费记录
-        Record record1 = new Record();
-        record1.setCardId(cardId);
-        record1.setSpendType(0);
-        record1.setValue(price*-1);
-        Record record2 = new Record();
-        record2.setCardId(cardId);
-        record2.setSpendType(1);
-        record2.setValue(integral);
-        cardMapper.updateCardById(card);
-        recordService.insertRecord(record1);
-        recordService.insertRecord(record2);
-    }
-
-    @Override
-    public void exchangeIntegral(String memberId, int consumeIntegral) {
-        //1.通过memberId查到所有卡号和对应积分
-        List<Card> cards = cardMapper.selectCardByMemberId(memberId);
-        for (Card card:
-             cards) {
-        //2.如果消耗积分比当前卡中积分要多，将消耗积分减去当前卡积分，将卡中积分置0，并设置消费记录
-            if(card.getIntegral()<=consumeIntegral){
-                consumeIntegral-=card.getIntegral();
-                Record record2 = new Record();
-                record2.setCardId(card.getCardId());
-                record2.setSpendType(1);
-                record2.setValue(card.getIntegral()*-1);
-                card.setIntegral(0);
-                cardMapper.updateCardById(card);
-                recordService.insertRecord(record2);
-            }else{
-                //消耗积分比当前卡中少，卡中积分减去需消耗积分
-
-                Record record = new Record();
-                record.setCardId(card.getCardId());
-                record.setSpendType(1);
-                record.setValue(consumeIntegral*-1);
-                card.setIntegral(card.getIntegral()-consumeIntegral);
-                cardMapper.updateCardById(card);
-                recordService.insertRecord(record);
-                break;
-            }
+            //消费记录
+            Record record1 = new Record();
+            record1.setcardId(cardId);
+            record1.setspendType(0);
+            record1.setValue(price*-1);
+            Record record2 = new Record();
+            record2.setcardId(cardId);
+            record2.setspendType(1);
+            record2.setValue(integral);
+            cardMapper.updateCardById(card);
+            recordService.insertRecord(record1);
+            recordService.insertRecord(record2);
+        }catch (RuntimeException e){
+            throw new CardException("消费失败",e);
         }
 
-
     }
 
     @Override
-    public Long getCardNum() {
-        return cardMapper.selectCardCount();
+    public void exchangeIntegral(String memberId, int consumeIntegral) throws CardException {
+        try {
+            //1.通过memberId查到所有卡号和对应积分
+            List<Card> cards = cardMapper.selectCardByMemberId(memberId);
+            for (Card card:
+                    cards) {
+                //2.如果消耗积分比当前卡中积分要多，将消耗积分减去当前卡积分，将卡中积分置0，并设置消费记录
+                if(card.getIntegral()<=consumeIntegral){
+                    consumeIntegral-=card.getIntegral();
+                    Record record2 = new Record();
+                    record2.setcardId(card.getCardId());
+                    record2.setspendType(1);
+                    record2.setValue(card.getIntegral()*-1);
+                    card.setIntegral(0);
+                    cardMapper.updateCardById(card);
+                    recordService.insertRecord(record2);
+                }else{
+                    //消耗积分比当前卡中少，卡中积分减去需消耗积分
+                    Record record = new Record();
+                    record.setcardId(card.getCardId());
+                    record.setspendType(1);
+                    record.setValue(consumeIntegral*-1);
+                    card.setIntegral(card.getIntegral()-consumeIntegral);
+                    cardMapper.updateCardById(card);
+                    recordService.insertRecord(record);
+                    break;
+                }
+            }
+        }catch (RuntimeException e){
+            throw new CardException("积分不足",e);
+        }
     }
 
     @Override
-    public List<String> getCardIdByFuzzyQuery(String memberId,String cardId) {
-        List<String> cardList  = cardMapper.selectCardIdByFuzzyQuery(memberId,cardId);
+    public Long getCardNum() throws CardException {
+        Long num = 0L;
+        try {
+            num = cardMapper.selectCardCount();
+        }catch (RuntimeException e){
+            throw new CardException("获取卡数量失败",e);
+        }
+        return num;
+    }
+
+    @Override
+    public List<String> getCardIdByFuzzyQuery(String memberId,String cardId) throws CardException {
+        List<String> cardList  = null;
+        try {
+            cardList = cardMapper.selectCardIdByFuzzyQuery(memberId,cardId);
+        }catch (RuntimeException e){
+            throw new CardException("获取会员卡id失败",e);
+        }
         return cardList;
     }
 
     @Override
-    public Card getCardByCardId(String cardId) {
-        return cardMapper.selectCardById(cardId);
+    public Card getCardByCardId(String cardId) throws CardException {
+        Card card = null;
+        try {
+            card = cardMapper.selectCardById(cardId);
+        }catch (RuntimeException e){
+            throw new CardException("会员卡id不存在",e);
+        }
+        return card;
     }
 
 

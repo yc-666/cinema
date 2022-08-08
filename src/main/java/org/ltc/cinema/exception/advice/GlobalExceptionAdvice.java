@@ -48,12 +48,12 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler(ServiceException.class)
-    public CinemaResult serverRuntimeException(Throwable e){
+    public CinemaResult serviceRuntimeException(Throwable e){
         log.error("服务异常---"+e.getMessage(),e);
         CinemaResult result = CinemaResult.failure(e.getMessage());
         if (e instanceof CardException){
             // 1002 代表卡相关错误
-            result.setData(1002);
+            result.setStatus(1002);
         }else if(e instanceof MemberException){
             // 1001 代表用户相关错误
             result.setData(1001);
@@ -61,6 +61,7 @@ public class GlobalExceptionAdvice {
             // 1003 查找异常
             result.setData(1003);
             result.setStatus(400);
+            result.setStatus(1001);
         }
         return result;
     }
