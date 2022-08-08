@@ -12,7 +12,7 @@ public interface RecordService {
      * @param memberId
      * @return
      */
-    List<Record> selectRecordByMemberId(String memberId);
+    List<Record> selectRecordByMemberId(String memberId) throws RecordException;
 
     /**
      * 删除会员卡的消费记录

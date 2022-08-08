@@ -50,7 +50,7 @@ public class RecordController {
     })
     @GetMapping("/{memberId}")
     public CinemaResult queryRecord(@PathVariable(value = "memberId") String memberId,
-        String pageIndex, String pageSize){
+        String pageIndex, String pageSize) throws RecordException{
         PageResult pageResult = new PageResult();
         PageHelper.startPage(Integer.parseInt(pageIndex), Integer.parseInt(pageSize));
         List<Record> records = recordService.selectRecordByMemberId(memberId);

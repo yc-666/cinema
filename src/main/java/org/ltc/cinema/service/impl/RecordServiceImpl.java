@@ -22,8 +22,11 @@ public class RecordServiceImpl implements RecordService {
     RecordMapper recordMapper;
 
     @Override
-    public List<Record> selectRecordByMemberId(String memberId){
+    public List<Record> selectRecordByMemberId(String memberId) throws RecordException{
         List <Record> res = recordMapper.selectRecordByMemberId(memberId);
+        if(res == null || res.isEmpty()){
+            throw new RecordException("此用户暂无消费记录");
+        }
         return res;
     }
 

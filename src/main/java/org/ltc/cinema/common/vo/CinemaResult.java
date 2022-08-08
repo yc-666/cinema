@@ -60,7 +60,7 @@ public class CinemaResult<T> {
     }
 
     public static <T> CinemaResult<T> failure(String msg) {
-        return failure(null, "", null);
+        return failure(null, msg, null);
     }
 
     public static <T> CinemaResult<T> failure(Integer code, String msg) {
